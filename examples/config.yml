@@ -1,0 +1,24 @@
+projects:
+  - name: "Triage"
+    autoAddIssuesMatching: "true" # all issues
+    columns:
+      - name: "Needs Triage"
+        label: "needs-triage"
+        default: true
+
+      - name: "In Progress"
+        label: "in-progress"
+
+      - name: "In Review"
+        label: "in-review"
+
+  - name: "Secret Project"
+    # uses a jsonata expression on the issue. see http://docs.jsonata.org/ for more details
+    autoAddIssuesMatching: 'labels[name="secret-project"]'
+    columns:
+      - name: "TODO"
+        label: "todo"
+        default: true
+
+      - name: "In Progress"
+        label: "in-progress"
