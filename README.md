@@ -6,7 +6,7 @@
 
 Add a `.github/project-rules.yml` file to your GitHub repository.
 
-See [`example/config.yml`](./example/config.yml) for a sample configuration file.
+See [`examples/config.yml`](./examples/config.yml) for a sample configuration file.
 
 ## Setup
 
