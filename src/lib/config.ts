@@ -1,4 +1,5 @@
-import { Config } from "./config-ti";
+import { createCheckers } from "ts-interface-checker";
+import configTI from "./config-ti";
 
 export interface Config {
   projects: ProjectConfig[];
@@ -6,8 +7,9 @@ export interface Config {
 
 export interface ColumnConfig {
   name: string;
-  label: string;
+  label?: string;
   default?: boolean;
+  closed?: boolean;
 }
 
 export interface ProjectConfig {
@@ -15,9 +17,6 @@ export interface ProjectConfig {
   columns: ColumnConfig[];
   autoAddIssuesMatching?: string;
 }
-
-import configTI from "./config-ti";
-import { createCheckers } from "ts-interface-checker";
 
 const checkers = createCheckers(configTI);
 

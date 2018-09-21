@@ -110,6 +110,17 @@ const issueIsInProject = (
   projectName: string
 ): boolean => projectCards.some(card => card.project.name == projectName);
 
+const issueIsClosed = (context: Context): boolean =>
+  context.payload.issue.state === "closed";
+
+const issueIsAllowedInColumn = (
+  context: Context,
+  columnConfig: ColumnConfig
+): boolean =>
+  columnConfig.closed === true
+    ? issueIsClosed(context)
+    : !issueIsClosed(context);
+
 const issueShouldBeAutoAddedToProject = (
   context: Context,
   projectConfig: ProjectConfig,
@@ -156,9 +167,13 @@ const getExpectedProjectPlacements = (
       const { columns } = projectConfig;
 
       const columnConfig =
-        columns.find(c => c.label === newLabel) ||
-        columns.find(c => hasLabel(context, c.label)) ||
-        columns.find(c => c.name === currentColumnName) ||
+        columns.find(c => c.closed === true && issueIsClosed(context)) ||
+        columns.find(c => newLabel != null && c.label === newLabel) ||
+        columns.find(c => c.label != null && hasLabel(context, c.label)) ||
+        columns.find(
+          c =>
+            c.name === currentColumnName && issueIsAllowedInColumn(context, c)
+        ) ||
         columns.find(c => c.default === true);
 
       if (columnConfig == null) {
@@ -203,11 +218,15 @@ const updateLabels = async (
   columnConfig: ColumnConfig
 ) => {
   context.log.info(columnConfig, "updating labels");
-  const projectControlledLabels = projectConfig.columns.map(c => c.label);
+  const projectControlledLabels = projectConfig.columns
+    .map(c => c.label)
+    .filter(l => l != null) as string[];
   const labelsToRemove = projectControlledLabels.filter(
     l => l !== columnConfig.label
   );
-  await addLabelsIfNotPresent(context, [columnConfig.label]);
+  if (columnConfig.label != null) {
+    await addLabelsIfNotPresent(context, [columnConfig.label]);
+  }
   await removeLabelsIfPresent(context, labelsToRemove);
 };
 

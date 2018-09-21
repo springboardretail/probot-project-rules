@@ -10,8 +10,9 @@ export const Config = t.iface([], {
 
 export const ColumnConfig = t.iface([], {
   "name": "string",
-  "label": "string",
+  "label": t.opt("string"),
   "default": t.opt("boolean"),
+  "closed": t.opt("boolean"),
 });
 
 export const ProjectConfig = t.iface([], {
